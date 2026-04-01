@@ -11,28 +11,33 @@ Tech Stack MERN (MongoDB, Express, React, Node.js)
 Version 1.0 
 Date March 2026 
   
-PES Hospital Chatbot — SRS Page 2 
+PES Hospital Chatbot — SRS Page 2
+
 1. What is this document? 
+
 This document explains what our chatbot does, why we are building it, how it works, and how we plan 
 to build it. We have written it in simple language so anyone — whether technical or not — can read and 
 understand it. 
 This is a student internship project done for PES University Hospital, Bengaluru. 
  
 2. What is the problem we are solving? 
+
 PES Hospital gets around 1,800 to 2,000 patients every single day at the OPD (Out-Patient Department). 
 Every one of them has to go to the registration counter first before seeing a doctor. 
  
-Here is what happens at the counter right now: 
+Here is what happens at the counter right now:- 
  
-Step 1 Patient walks in and stands in a queue at the counter 
-Step 2 Counter staff asks for their Aadhaar card (compulsory) and collects details — name, 
-age, address, complaint 
-Step 3 Staff manually types everything into the hospital system 
-Step 4 Based on what the patient says, staff decides which OPD department to send them 
-to 
-Step 5 Patient gets a token slip and goes to that OPD floor 
+Step 1. Patient walks in and stands in a queue at the counter. 
+Step 2. Counter staff asks for their Aadhaar card (compulsory) and collects details — name, 
+age, address, complaint. 
+
+Step 3. Staff manually types everything into the hospital system. 
+Step 4. Based on what the patient says, staff decides which OPD department to send them 
+to. 
+
+Step 5. Patient gets a token slip and goes to that OPD floor. 
  
-This process has three real problems: 
+This process has three real problems:- 
  
 Problem What actually happens because of it 
 Long queues Patients wait 20–40 minutes just to register, especially in morning 
@@ -44,6 +49,7 @@ Manual data entry Typing everything by hand is slow and sometimes creates duplic
 patient records in the system 
  
 3. What is our solution? 
+
 We are building a chatbot — basically a smart registration form that talks to the patient in their own 
 language. The patient can open it on their phone by scanning a QR code at the hospital entrance, or use 
 a tablet that the hospital keeps at the entrance (called a kiosk). 
@@ -54,45 +60,59 @@ and still works — it just gets far fewer people standing in front of it.
 No app download needed. It opens directly in the phone's browser, just like a website. 
 PES Hospital Chatbot — SRS Page 3 
  
-The counter remains open for: 
+The counter remains open for:- 
+
 • Elderly patients who are not comfortable with phones 
 • Patients without a smartphone 
 • Any complicated cases that need human help 
  
   
 PES Hospital Chatbot — SRS Page 4 
+
 4. How does the chatbot work? — Step by step 
-Here is exactly what happens when a patient uses our chatbot: 
+
+Here is exactly what happens when a patient uses our chatbot:- 
  
 1. Patient arrives at the hospital entrance and either scans the QR code on their phone or walks up 
-to the kiosk tablet. 
+to the kiosk tablet.
+
 2. The chatbot opens — no login, no account, no password needed. 
+
 3. Patient picks their language — Kannada, Hindi, English, Telugu, or Tamil. The entire chatbot 
 switches to that language instantly. 
-4. Chatbot asks: are you a new patient or have you visited before? 
+
+4. Chatbot asks:- are you a new patient or have you visited before? 
 5. If new patient — chatbot collects: name, age, gender, Aadhaar number, and mobile number. A 
 unique Patient ID (called UHID) is automatically created and saved. 
+
 6. If returning patient — they type their existing UHID. Their details are already saved, so they skip 
 the full form. 
-7. Patient taps big symptom buttons to describe what is wrong — for example: Fever, Eye problem, 
+
+7. Patient taps big symptom buttons to describe what is wrong — for example:- Fever, Eye problem, 
 Chest pain, Stomach pain, Bone/Joint pain, Skin problem, Child health, Ear/Nose/Throat. 
+
 8. Chatbot looks at the selected symptoms and tells the patient which OPD department and floor to 
 go to. For example: Fever → General Medicine, Floor 1, Room 101. 
+
 9. A token slip appears on the patient's phone screen showing their token number, department, 
 floor, and time. They show this screen to the staff at the OPD entrance — exactly like showing a 
 paper slip today. 
  
 Patient flow diagram 
-The diagram below shows the complete journey visually: 
- 
- 
 
+The diagram below shows the complete journey visually:- 
+ 
+ 
 PES Hospital Chatbot — SRS Page 5 
+
 Figure 1 — How a patient moves through the chatbot from arrival to token 
   
 PES Hospital Chatbot — SRS Page 6 
+
 5. What exactly does the chatbot do? 
-5.1 For the patient 
+
+5.1 For the patient:- 
+
 • Greets them in their own language 
 • Asks simple questions one at a time — like a conversation, not a big form 
 • Reads questions out loud using voice so even low-literacy patients can follow 
@@ -101,19 +121,22 @@ PES Hospital Chatbot — SRS Page 6
 • Tells them exactly which floor and room to go to 
 • Shows a clean token slip on screen with all their details 
  
-5.2 For the counter staff 
+5.2 For the counter staff:- 
+
 • A simple dashboard page shows all patients who registered through the chatbot today 
 • Staff can see each patient's name, token number, department, and time of registration 
 • Staff can still manually register patients who walked directly to the counter 
 • Both chatbot patients and counter patients appear in the same queue view 
  
-5.3 For the hospital admin 
+5.3 For the hospital admin:- 
+
 • A graphs page shows useful daily data — how many patients per department, what time the rush 
 happens, which languages patients use most 
 • This is data the hospital currently does not have — our system generates it automatically as a 
 side effect of digital registration 
  
 5.4 How does it decide which department to send the patient to? 
+
 We maintain a simple list that maps symptoms to departments. When the patient taps their symptoms, 
 the system checks this list and gives the matching department. Examples: 
  
@@ -130,10 +153,12 @@ Ear pain, hearing problem, throat pain ENT Floor 2
 Anything not matched above General Medicine (default) Floor 1 
  
 PES Hospital Chatbot — SRS Page 7 
+
 The hospital admin can update this list anytime without touching the code — it is stored in the 
 database. 
  
-6. What we are NOT doing 
+6. What we are NOT doing? 
+
 To keep the project realistic for an 8-week internship, we have clearly decided NOT to build the 
 following: 
  
@@ -149,6 +174,7 @@ doctors
 Emergency handling People in real emergencies run straight to the 
 emergency ward — they do not stop to scan a QR 
 code 
+
 Integration with existing hospital software Their current system is separate — connecting to it 
 is a much bigger project 
 Mobile app (Android/iOS) Web app is enough — no download needed, works 
@@ -156,7 +182,9 @@ on any phone browser
  
   
 PES Hospital Chatbot — SRS Page 8 
+
 7. What tools and technologies are we using? 
+
 Our team has decided to use the MERN stack. Here is what each part does in simple terms: 
  
 Name What it is What it does in our project 
@@ -165,6 +193,7 @@ numbers. Free cloud version (Atlas) used.
 Express.js Backend framework Handles the logic on the server — saves patient data, 
 generates UHID, generates token number, sends data 
 back to the screen. 
+
 React.js Frontend / UI Builds the chatbot screens the patient sees — language 
 selection, symptom buttons, token slip screen, counter 
 dashboard. 
@@ -173,6 +202,7 @@ backend alive.
 i18next Translation library Handles switching all text to the patient's chosen 
 language. We write translation files for each language 
 once. 
+
 Web Speech API Voice (built into browser) Lets the chatbot speak questions aloud and also accept 
 voice input from the patient. Completely free — no API 
 key needed. 
@@ -184,6 +214,7 @@ Render Hosting for backend Puts our Node/Express server live on the internet. Fr
 tier available. 
  
 8. How is the data stored? 
+
 We use two separate storage buckets in MongoDB — one for patient details and one for each visit. This 
 way a patient's personal information is saved only once, even if they visit the hospital 10 times. 
  
@@ -199,39 +230,48 @@ to a department today and adds 1. So the 47th person going to General Medicine t
 047. It resets to GM-001 every morning. 
  
 PES Hospital Chatbot — SRS Page 9 
+
 9. How are we going to build this? 
+
 We are building this in 5 stages over 8 weeks. The most important rule is: get the basic thing working 
 first, then add extras on top. We do not try to build everything at once. 
  
 Stage When What we build 
+
 Stage 1 Week 1–2 React UI only — language selection screen, symptom picker buttons, 
 token slip screen. No backend yet. Everything is hardcoded just to see 
 how it looks and flows. 
+
 Stage 2 Week 3 Backend and database — Node + Express server, MongoDB connected, 
 patient data saved, UHID auto-generated, token auto-generated, sent 
 back to the screen. 
+
 Stage 3 Week 4 Connect everything — React calls the real backend. Full flow works end 
 to end. Patient registers → data saved → token shown. This is the first 
 real working demo. 
+
 Stage 4 Week 5–6 Voice and languages — Web Speech API added for voice input and 
 output. i18next added for language switching. More symptom buttons 
 added based on hospital feedback. 
+
 Stage 5 Week 7–8 Dashboard and graphs — Counter staff queue view, daily patient count 
 graphs, department-wise charts, peak hour chart. Testing with real 
 hospital staff. Final demo. 
  
 10. Who is doing what? 
+
 Frontend Building the chatbot screens in React — what the patient sees and taps 
 Backend Building the server in Node.js + Express — saving data, generating 
 tokens, sending responses 
 Database Setting up MongoDB Atlas, designing the patient and visit collections 
 Voice and Languages Integrating Web Speech API for voice and i18next for multilingual 
 support 
+
 Dashboard and Graphs Building the counter staff view and admin analytics page using Recharts 
 Testing Testing the full flow with real users at the hospital, fixing issues, 
 preparing demo 
  
-11. One line summary of the whole project 
+11. One line summary of the whole project? 
  
 Patient opens chatbot → picks language → taps symptoms → gets token and floor number → 
 goes to OPD.  Counter staff sees everything on a live dashboard with graphs. 
