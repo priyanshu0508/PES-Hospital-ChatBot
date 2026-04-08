@@ -2,13 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePatient } from '../context/PatientContext';
 import { Globe, ChevronRight, QrCode, Smartphone } from 'lucide-react';
+import pesLogo from '../assets/logo_1.png';
 
 const languages = [
-  { code: 'en', label: 'English', native: 'English', flag: '🇮🇳' },
-  { code: 'hi', label: 'Hindi', native: 'हिंदी', flag: '🇮🇳' },
-  { code: 'kn', label: 'Kannada', native: 'ಕನ್ನಡ', flag: '🇮🇳' },
-  { code: 'te', label: 'Telugu', native: 'తెలుగు', flag: '🇮🇳' },
-  { code: 'ta', label: 'Tamil', native: 'தமிழ்', flag: '🇮🇳' }
+  { code: 'en', label: 'English', native: 'English', flag: 'EN' },
+  { code: 'hi', label: 'Hindi', native: 'हिंदी', flag: 'HI' },
+  { code: 'kn', label: 'Kannada', native: 'ಕನ್ನಡ', flag: 'KN' },
+  { code: 'te', label: 'Telugu', native: 'తెలుగు', flag: 'TE' },
+  { code: 'ta', label: 'Tamil', native: 'தமிழ்', flag: 'TA' }
 ];
 
 const LanguageSelect = () => {
@@ -62,17 +63,19 @@ const LanguageSelect = () => {
 
       {/* Main Card */}
       <div className="glass-card" style={{ padding: '3rem 2.5rem' }}>
-        {/* Hospital branding */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{
-            width: '72px', height: '72px', borderRadius: '20px',
-            background: 'linear-gradient(135deg, var(--primary-500), var(--accent-violet))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 1.25rem',
-            boxShadow: '0 8px 24px -6px rgba(59,130,246,0.4)'
-          }}>
-            <Globe size={36} color="white" />
-          </div>
+          <img
+            src={pesLogo}
+            alt="PES University Hospital"
+            style={{
+              height: '80px',
+              width: 'auto',
+              margin: '0 auto 1.25rem',
+              display: 'block',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 8px 16px rgba(59,130,246,0.15))'
+            }}
+          />
           <h1 className="page-title text-gradient">PES Hospital</h1>
           <p className="page-subtitle" style={{ marginTop: '0.5rem' }}>
             OPD Registration Assistant
@@ -111,7 +114,16 @@ const LanguageSelect = () => {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <span style={{ fontSize: '1.75rem' }}>{lang.flag}</span>
+              <div style={{
+                width: '44px', height: '44px', borderRadius: '12px',
+                background: 'linear-gradient(135deg, var(--primary-50), var(--primary-100))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--primary-600)', fontWeight: 800, fontSize: '0.9rem',
+                border: '1px solid var(--primary-200)',
+                flexShrink: 0
+              }}>
+                {lang.flag}
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.05rem' }}>
                   {lang.native}

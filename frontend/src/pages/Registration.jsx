@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePatient } from '../context/PatientContext';
-import { ArrowRight, ArrowLeft, User, Phone, CreditCard, Calendar, Users, AlertCircle } from 'lucide-react';
+import { registerPatient } from '../services/api';
+import { ArrowRight, ArrowLeft, User, Phone, CreditCard, Calendar, Users, AlertCircle, Loader2 } from 'lucide-react';
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Registration = () => {
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   const VALIDATORS = {
     name: (v) => {
@@ -61,8 +64,9 @@ const Registration = () => {
     setErrors(prev => ({ ...prev, [name]: VALIDATORS[name](value) }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setApiError('');
     const newErrors = {};
     Object.keys(VALIDATORS).forEach(key => {
       newErrors[key] = VALIDATORS[key](formData[key]);
@@ -72,8 +76,20 @@ const Registration = () => {
 
     const hasErrors = Object.values(newErrors).some(e => e !== '');
     if (!hasErrors) {
-      updatePatientData({ personalInfo: formData });
-      navigate('/symptoms');
+      setLoading(true);
+      try {
+        const data = await registerPatient(formData);
+        if (data.success) {
+          updatePatientData({ personalInfo: formData, uhid: data.uhid, isNew: true });
+          navigate('/symptoms');
+        } else {
+          setApiError(data.message || 'Registration failed. Please try again.');
+        }
+      } catch {
+        setApiError('Cannot connect to server. Please ensure the backend is running.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -88,15 +104,34 @@ const Registration = () => {
   return (
     <div className="glass-card animate-in" style={{ padding: '2.5rem', maxWidth: '520px', width: '100%' }}>
       <button
-        onClick={() => navigate('/patient-type')}
+        onClick={() => navigate(-1)}
         style={{
-          display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          fontFamily: "'Outfit',sans-serif", fontWeight: 500, fontSize: '0.9rem',
-          color: 'var(--text-secondary)', marginBottom: '1.5rem', padding: '0.4rem 0'
+          display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+          background: 'var(--primary-600)', 
+          border: 'none', 
+          cursor: 'pointer',
+          fontFamily: "'Outfit', sans-serif", 
+          fontWeight: 600, 
+          fontSize: '0.85rem',
+          color: 'white', 
+          marginBottom: '1.5rem', 
+          padding: '0.5rem 1rem',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.background = 'var(--primary-700)';
+          e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.boxShadow = '0 6px 15px rgba(37, 99, 235, 0.3)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.background = 'var(--primary-600)';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.2)';
         }}
       >
-        <ArrowLeft size={16} /> {t('Back')}
+        <ArrowLeft size={16} strokeWidth={2.5} /> {t('Back')}
       </button>
 
       <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '2rem' }}>
@@ -165,10 +200,25 @@ const Registration = () => {
           })}
         </div>
 
-        <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: '1.5rem' }}>
-          {t('Next')} <ArrowRight size={20} />
+        {apiError && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.4rem',
+            padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
+            background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)',
+            color: 'var(--error)', fontSize: '0.875rem', marginTop: '1rem'
+          }}>
+            <AlertCircle size={16} /> {apiError}
+          </div>
+        )}
+
+        <button type="submit" className="btn btn-primary btn-lg"
+          style={{ width: '100%', marginTop: '1.5rem' }}
+          disabled={loading}
+        >
+          {loading ? <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Registering...</> : <>{t('Next')} <ArrowRight size={20} /></>}
         </button>
       </form>
+
     </div>
   );
 };

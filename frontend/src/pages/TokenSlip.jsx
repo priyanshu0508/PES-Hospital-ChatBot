@@ -38,7 +38,49 @@ const TokenSlip = () => {
   };
 
   return (
-    <div className="glass-card animate-in" style={{ padding: '3rem 2.5rem', maxWidth: '460px', width: '100%', textAlign: 'center' }}>
+    <>
+      <style>{`
+        @media print {
+          header, footer, .btn, .no-print, button {
+            display: none !important;
+          }
+          body {
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .print-container {
+            position: absolute !important;
+            top: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 100% !important;
+            max-width: 500px !important;
+            box-shadow: none !important;
+            border: 1px solid #e2e8f0 !important;
+            background: white !important;
+            margin: 20px auto !important;
+            padding: 2rem !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .token-text-print {
+            background: none !important;
+            -webkit-text-fill-color: #3b82f6 !important;
+            color: #3b82f6 !important;
+            font-size: 4rem !important;
+          }
+          .success-icon-print {
+            box-shadow: none !important;
+          }
+          .uhid-card-print {
+            background: #d1fae5 !important;
+            border: 1px solid #10b981 !important;
+          }
+        }
+      `}</style>
+      
+      <div className="glass-card animate-in print-container" style={{ padding: '3rem 2.5rem', maxWidth: '460px', width: '100%', textAlign: 'center' }}>
       {/* Success Icon */}
       <div style={{
         width: '80px', height: '80px', borderRadius: '50%',
@@ -48,7 +90,7 @@ const TokenSlip = () => {
         boxShadow: '0 8px 30px -6px rgba(16,185,129,0.5)',
         animation: 'scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both'
       }}>
-        <CheckCircle2 size={40} color="white" />
+        <CheckCircle2 size={40} color="white" className="success-icon-print" />
       </div>
 
       <h2 className="page-title" style={{ marginBottom: '0.25rem' }}>{t('Registration Complete')}</h2>
@@ -62,7 +104,7 @@ const TokenSlip = () => {
         marginBottom: '1rem',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: '0.75rem'
-      }}>
+      }} className="uhid-card-print">
         <div style={{ textAlign: 'left' }}>
           <div style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', color: '#065f46', letterSpacing: '0.5px' }}>
             {t('Your UHID')}
@@ -105,7 +147,7 @@ const TokenSlip = () => {
           background: 'rgba(139,92,246,0.1)'
         }} />
 
-        <div style={{
+        <div className="token-text-print" style={{
           fontSize: '3.5rem', fontWeight: 900, fontFamily: "'Outfit',sans-serif",
           background: 'linear-gradient(135deg, var(--primary-600), var(--accent-violet))',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
@@ -142,7 +184,8 @@ const TokenSlip = () => {
           <Home size={18} /> {t('Finish')}
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

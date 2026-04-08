@@ -1,0 +1,19 @@
+→ Display symptom options in the patient’s regional language
+→ Enable voice input for symptoms in regional languages
+→ Add Aadhaar number validation; if not available, redirect to the official website to create one
+→ Include a Gynecology department
+→ Provide floor/location details for all departments
+→ Update the SRS document using professional language and proper keywords
+→ Correct grammar mistakes in the regional language (Tamil)
+→ If a patient is already registered, redirect to a different page and verify if they have new or different health issues
+→ Add an SMS feature to send the token number to the patient’s mobile
+→ Update the PES logo and tagline, and clearly mention the hospital name
+→ Provide an emergency contact number for the PES hospital
+→ Improve the design and functionality of the home page
+→ Add a map link below the New Patient / Existing Patient section
+→ Validate the full name field properly and automatically add +91 before the mobile number
+→ Implement Aadhaar verification using OTP and include a back option after selecting symptoms
+→ Update the database so that department queues are refreshed properly and reset every 24 hours
+→ Re-evaluate and standardize the UHID format
+→ Remove the staff and admin portal (needs confirmation)
+→ Identify and remove duplicate data, ensuring only valid and original

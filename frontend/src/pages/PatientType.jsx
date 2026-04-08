@@ -18,17 +18,36 @@ const PatientType = () => {
       <button
         onClick={() => navigate('/')}
         style={{
-          display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          fontFamily: "'Outfit',sans-serif", fontWeight: 500, fontSize: '0.9rem',
-          color: 'var(--text-secondary)', marginBottom: '1.5rem', padding: '0.4rem 0'
+          display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+          background: 'var(--primary-600)',
+          border: 'none',
+          cursor: 'pointer',
+          fontFamily: "'Outfit', sans-serif",
+          fontWeight: 600,
+          fontSize: '0.85rem',
+          color: 'white',
+          marginBottom: '1.5rem',
+          padding: '0.5rem 1rem',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.background = 'var(--primary-700)';
+          e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.boxShadow = '0 6px 15px rgba(37, 99, 235, 0.3)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.background = 'var(--primary-600)';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.2)';
         }}
       >
-        <ArrowLeft size={16} /> {t('Back')}
+        <ArrowLeft size={16} strokeWidth={2.5} /> {t('Back')}
       </button>
 
       <h2 className="page-title" style={{ textAlign: 'center' }}>
-        {t('Are you a new or returning patient?')}
+        {t('Are you a New or Existing Patient?')}
       </h2>
       <p className="page-subtitle" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         {t('Select one to continue')}
@@ -94,10 +113,10 @@ const PatientType = () => {
           </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: '1.15rem', color: 'var(--text-primary)', fontFamily: "'Outfit',sans-serif" }}>
-              {t('Returning Patient')}
+              {t('Existing Patient')}
             </div>
             <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-              {t('Already have UHID')}
+              {t('Already have an UHID')}
             </div>
           </div>
         </button>

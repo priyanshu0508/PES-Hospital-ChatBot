@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePatient } from '../context/PatientContext';
-import { Mic, MicOff, Check, ArrowRight, ArrowLeft, Volume2 } from 'lucide-react';
+import { createVisit } from '../services/api';
+import { Mic, MicOff, Check, ArrowRight, ArrowLeft, Volume2, Loader2, AlertCircle } from 'lucide-react';
 
 const DEPARTMENT_MAP = [
   { dept: "General Medicine", floor: 1, room: "101", keywords: ["fever", "cold", "cough", "body ache", "weakness"] },
@@ -54,6 +55,8 @@ const Symptoms = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceText, setVoiceText] = useState('');
   const [manualText, setManualText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   // Check if SpeechRecognition is available (requires secure context: HTTPS or localhost)
   const hasSpeechSupport = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
@@ -93,13 +96,46 @@ const Symptoms = () => {
     recognition.start();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const textInput = voiceText || manualText;
     if (selected.length === 0 && !textInput) return;
-    const allInput = textInput ? [...selected, textInput] : selected;
-    const deptInfo = getDepartment(allInput);
-    updatePatientData({ symptoms: selected.map(id => SYMPTOM_KEYWORDS[id] || id), departmentInfo: deptInfo });
-    navigate('/token');
+    setApiError('');
+    setLoading(true);
+
+    // Build symptoms array — selected button IDs + any voice/text input
+    const symptomsArray = [
+      ...selected.map(id => SYMPTOM_KEYWORDS[id] || id),
+      ...(textInput ? [textInput] : [])
+    ];
+
+    try {
+      const data = await createVisit({
+        patientUHID: patientData.uhid || 'WALKIN',
+        patientName: patientData.personalInfo?.name || 'Unknown',
+        symptoms: symptomsArray,
+        language: patientData.language || 'en',
+        visitType: patientData.isNew ? 'new' : 'returning',
+      });
+
+      if (data.success) {
+        updatePatientData({
+          symptoms: symptomsArray,
+          departmentInfo: {
+            name: data.department,
+            floor: data.floor,
+            room: data.room,
+            token: data.token,
+          }
+        });
+        navigate('/token');
+      } else {
+        setApiError(data.message || 'Failed to get token. Please try again.');
+      }
+    } catch {
+      setApiError('Cannot connect to server. Please ensure the backend is running.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const hasInput = selected.length > 0 || voiceText || manualText;
@@ -109,13 +145,32 @@ const Symptoms = () => {
       <button
         onClick={() => navigate(-1)}
         style={{
-          display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          fontFamily: "'Outfit',sans-serif", fontWeight: 500, fontSize: '0.9rem',
-          color: 'var(--text-secondary)', marginBottom: '1rem', padding: '0.4rem 0'
+          display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+          background: 'var(--primary-600)', 
+          border: 'none', 
+          cursor: 'pointer',
+          fontFamily: "'Outfit', sans-serif", 
+          fontWeight: 600, 
+          fontSize: '0.85rem',
+          color: 'white', 
+          marginBottom: '1.5rem', 
+          padding: '0.5rem 1rem',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.background = 'var(--primary-700)';
+          e.currentTarget.style.transform = 'translateY(-1px)';
+          e.currentTarget.style.boxShadow = '0 6px 15px rgba(37, 99, 235, 0.3)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.background = 'var(--primary-600)';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.2)';
         }}
       >
-        <ArrowLeft size={16} /> {t('Back')}
+        <ArrowLeft size={16} strokeWidth={2.5} /> {t('Back')}
       </button>
 
       {/* Progress */}
@@ -218,19 +273,34 @@ const Symptoms = () => {
         })}
       </div>
 
+      {apiError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.4rem',
+          padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
+          background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)',
+          color: 'var(--error)', fontSize: '0.875rem', marginBottom: '1rem'
+        }}>
+          <AlertCircle size={16} /> {apiError}
+        </div>
+      )}
+
       <button
         className="btn btn-primary btn-lg"
         onClick={handleSubmit}
-        disabled={!hasInput}
+        disabled={!hasInput || loading}
         style={{
           width: '100%',
           opacity: !hasInput ? 0.5 : 1,
           pointerEvents: !hasInput ? 'none' : 'auto'
         }}
       >
-        {t('Submit')} <ArrowRight size={20} />
+        {loading
+          ? <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Getting Token...</>
+          : <>{t('Submit')} <ArrowRight size={20} /></>
+        }
       </button>
     </div>
+
   );
 };
 
