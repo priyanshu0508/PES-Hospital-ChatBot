@@ -26,12 +26,8 @@ const LanguageSelect = () => {
   // Use network IP so phones on the same Wi-Fi can reach this app
   const getNetworkUrl = () => {
     const { hostname, port, protocol } = window.location;
-    // If already on a LAN IP, use as-is; otherwise guide user
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      return `${protocol}//${hostname}:${port}`;
-    }
-    // Fallback: show localhost (phone won't reach, but avoids errors)
-    return `${protocol}//${hostname}:${port}`;
+    const portSuffix = port ? `:${port}` : '';
+    return `${protocol}//${hostname}${portSuffix}`;
   };
   const appUrl = getNetworkUrl();
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(appUrl)}&color=2563eb&bgcolor=f0f4f8`;
