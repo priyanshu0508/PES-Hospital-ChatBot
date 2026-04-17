@@ -13,6 +13,7 @@ const DEPARTMENT_MAP = [
   { dept: "Orthopaedics", floor: 3, room: "301", keywords: ["bone pain", "joint pain", "back pain"] },
   { dept: "Dermatology", floor: 3, room: "310", keywords: ["skin rash", "itching", "hair loss", "skin problem"] },
   { dept: "Paediatrics", floor: 4, room: "401", keywords: ["child fever", "vaccination", "child growth", "child health"] },
+  { dept: "Gynaecology", floor: 2, room: "215", keywords: ["women's health", "pregnancy", "period", "gynaecology"] },
   { dept: "Dental", floor: 1, room: "112", keywords: ["toothache", "gum pain", "cavity", "tooth problem"] },
   { dept: "ENT", floor: 2, room: "210", keywords: ["ear pain", "hearing problem", "throat pain", "ear problem", "nose problem"] }
 ];
@@ -26,13 +27,14 @@ const DISPLAY_SYMPTOMS = [
   { id: "skin", label: "Skin Problem", emoji: "🩹" },
   { id: "child", label: "Child Health", emoji: "👶" },
   { id: "dental", label: "Tooth / Gum Pain", emoji: "🦷" },
-  { id: "ent", label: "Ear / Nose / Throat", emoji: "👂" }
+  { id: "ent", label: "Ear / Nose / Throat", emoji: "👂" },
+  { id: "gynae", label: "Women's Health", emoji: "🤰" }
 ];
 
 const SYMPTOM_KEYWORDS = {
   "fever": "fever", "eye": "eye problem", "chest": "chest pain",
   "stomach": "stomach pain", "bone": "bone pain", "skin": "skin problem",
-  "child": "child health", "dental": "toothache", "ent": "ear problem"
+  "child": "child health", "dental": "toothache", "ent": "ear problem", "gynae": "pregnancy"
 };
 
 const getDepartment = (selectedIds) => {

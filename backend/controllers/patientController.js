@@ -25,7 +25,7 @@ const generateToken = async (prefix, deptName) => {
 // ─── POST /api/patients/register ─────────────────────────────────
 const registerPatient = async (req, res) => {
   try {
-    const { name, age, gender, aadhaar, mobile } = req.body;
+    const { name, age, gender, aadhaar, abha, mobile } = req.body;
     if (!name || !age || !gender || !aadhaar || !mobile) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
@@ -38,7 +38,7 @@ const registerPatient = async (req, res) => {
       if (!existing) unique = true;
     }
 
-    const patient = await Patient.create({ uhid, name, age, gender, aadhaar, mobile });
+    const patient = await Patient.create({ uhid, name, age, gender, aadhaar, abha: abha || '', mobile });
     res.status(201).json({ success: true, uhid: patient.uhid, message: 'Patient registered successfully.' });
   } catch (error) {
     console.error(error);
@@ -94,4 +94,20 @@ const createVisit = async (req, res) => {
   }
 };
 
-module.exports = { registerPatient, getPatientByUHID, createVisit };
+// ─── GET /api/visits/last/:uhid ──────────────────────────────────
+const getLastVisit = async (req, res) => {
+  try {
+    const visit = await Visit.findOne({ patientUHID: req.params.uhid.toUpperCase() })
+      .sort({ timestamp: -1 })
+      .limit(1);
+    if (!visit) {
+      return res.status(404).json({ success: false, message: 'No visits found.' });
+    }
+    res.json({ success: true, visit });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+module.exports = { registerPatient, getPatientByUHID, createVisit, getLastVisit };

@@ -11,6 +11,7 @@ const patientSchema = new mongoose.Schema({
   age: { type: Number, required: true },
   gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
   aadhaar: { type: String, required: true, trim: true },
+  abha: { type: String, trim: true },
   mobile: { type: String, required: true, trim: true },
 }, { timestamps: true });
 

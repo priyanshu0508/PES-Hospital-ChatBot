@@ -20,7 +20,7 @@ const LanguageSelect = () => {
   const handleSelect = (code) => {
     i18n.changeLanguage(code);
     updatePatientData({ language: code });
-    navigate('/patient-type');
+    navigate('/chat');
   };
 
   // Use network IP so phones on the same Wi-Fi can reach this app

@@ -9,6 +9,7 @@ const DEPARTMENT_MAP = [
   { dept: 'Paediatrics',      floor: 4, room: '401', prefix: 'PAE',  keywords: ['child fever', 'vaccination', 'child growth', 'child health', 'paediatrics'] },
   { dept: 'Dental',           floor: 1, room: '112', prefix: 'DENT', keywords: ['toothache', 'gum pain', 'cavity', 'tooth problem', 'dental'] },
   { dept: 'ENT',              floor: 2, room: '210', prefix: 'ENT',  keywords: ['ear pain', 'hearing problem', 'throat pain', 'ear problem', 'nose problem', 'ent'] },
+  { dept: 'Gynaecology',      floor: 2, room: '215', prefix: 'GYN',  keywords: ['women\'s health', 'pregnancy', 'period', 'gynaecology'] },
 ];
 
 

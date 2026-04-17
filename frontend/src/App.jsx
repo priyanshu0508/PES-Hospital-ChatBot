@@ -12,6 +12,7 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Symptoms from './pages/Symptoms';
 import TokenSlip from './pages/TokenSlip';
+import ChatBot from './pages/ChatBot';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <div className="app-container">
           <Routes>
             <Route path="/"             element={<LanguageSelect />} />
+            <Route path="/chat"         element={<ChatBot />} />
             <Route path="/patient-type" element={<PatientType />} />
             <Route path="/register"     element={<Registration />} />
             <Route path="/login"        element={<Login />} />
@@ -42,3 +44,4 @@ function App() {
 }
 
 export default App;
+

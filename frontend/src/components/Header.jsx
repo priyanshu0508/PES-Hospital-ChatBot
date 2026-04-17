@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, Clock, X, ExternalLink, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import pesLogo from '../assets/logo.png';
@@ -6,6 +6,17 @@ import pesLogo from '../assets/logo.png';
 const Header = () => {
   const navigate = useNavigate();
   const [showTimings, setShowTimings] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 480);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmallMobile(window.innerWidth < 480);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <>
@@ -23,11 +34,12 @@ const Header = () => {
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0.75rem 1.5rem',
+          padding: isMobile ? '0.75rem 1rem' : '0.75rem 1.5rem',
           display: 'flex',
+          flexDirection: isSmallMobile ? 'column' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem',
+          gap: isSmallMobile ? '0.5rem' : '1rem',
         }}>
 
           {/* ── Left: Logo + Name ──────────────────────────────── */}
@@ -47,7 +59,7 @@ const Header = () => {
                 src={pesLogo}
                 alt="PES University Hospital"
                 style={{
-                  height: '48px',
+                  height: isSmallMobile ? '38px' : '48px',
                   width: 'auto',
                   objectFit: 'contain',
                 }}
@@ -56,7 +68,13 @@ const Header = () => {
           </div>
 
           {/* ── Right: Emergency Info ──────────────────────────── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: isMobile ? '0.5rem' : '1.25rem', 
+            flexWrap: 'wrap',
+            justifyContent: isMobile ? 'center' : 'flex-end'
+          }}>
 
             {/* OPD Timings Link */}
             <button
@@ -84,9 +102,10 @@ const Header = () => {
                 e.currentTarget.style.background = 'transparent';
                 e.currentTarget.style.color = 'var(--text-secondary)';
               }}
+              title="Visiting Hours"
             >
               <Clock size={15} />
-              Visiting Hours
+              {!isSmallMobile && "Visiting Hours"}
             </button>
 
 
@@ -116,10 +135,10 @@ const Header = () => {
                 e.currentTarget.style.background = 'transparent';
                 e.currentTarget.style.color = 'var(--text-secondary)';
               }}
-              title="VM78+55Q, Konappana Agrahara, Electronic City, Bengaluru"
+              title="Location"
             >
               <MapPin size={15} />
-              Location
+              {!isSmallMobile && "Location"}
             </a>
 
             {/* Website Link */}
@@ -144,16 +163,18 @@ const Header = () => {
                 e.currentTarget.style.background = 'transparent';
                 e.currentTarget.style.color = 'var(--text-secondary)';
               }}
+              title="Visit Website"
             >
               <ExternalLink size={15} />
-              Visit Website
+              {!isSmallMobile && "Visit Website"}
             </a>
 
             {/* Phone number */}
             <a href="tel:8010728728" style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              fontFamily: "'Outfit', sans-serif", fontSize: '0.85rem', fontWeight: 600,
+              fontFamily: "'Outfit', sans-serif", fontSize: isSmallMobile ? '0.75rem' : '0.85rem', fontWeight: 600,
               color: 'var(--primary-600)', textDecoration: 'none',
+              padding: '0.4rem 0.6rem',
             }}>
               <Phone size={15} strokeWidth={2.2} />
               8010 728 728
