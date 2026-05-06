@@ -1,8 +1,6 @@
 import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
-  const navigate = useNavigate();
   const year = new Date().getFullYear();
 
   return (

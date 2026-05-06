@@ -40,4 +40,5 @@ export const PatientProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePatient = () => useContext(PatientContext);

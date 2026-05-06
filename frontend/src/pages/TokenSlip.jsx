@@ -9,6 +9,7 @@ const TokenSlip = () => {
   const { t } = useTranslation();
   const { patientData, resetPatientData } = usePatient();
   const [uhidCopied, setUhidCopied] = useState(false);
+  const [generatedUHID] = useState(() => patientData.uhid || `PES-${Date.now().toString(36).toUpperCase().slice(-6)}`);
 
   const handleDone = () => {
     resetPatientData();
@@ -27,8 +28,7 @@ const TokenSlip = () => {
   const { name: dept, floor, room, token } = patientData.departmentInfo;
   const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Gap #5: Generate a UHID for new patients
-  const generatedUHID = patientData.uhid || `PES-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+
 
   const copyUHID = () => {
     navigator.clipboard.writeText(generatedUHID).then(() => {

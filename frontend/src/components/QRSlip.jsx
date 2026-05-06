@@ -143,30 +143,43 @@ const QRSlip = ({ slip, onDone }) => {
 
           {/* Actions */}
           <div className="no-print" style={{
-            display: 'flex', gap: '0.75rem', width: '100%', marginTop: '0.25rem'
+            display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', marginTop: '0.25rem'
           }}>
-            <button onClick={() => window.print()} style={{
-              flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
-              padding: '0.65rem', borderRadius: '10px', border: '1.5px solid #d1d5db',
-              background: 'white', color: '#374151', fontWeight: 600, cursor: 'pointer',
-              fontSize: '0.85rem', transition: 'all 0.2s',
-            }}
-              onMouseEnter={e => e.currentTarget.style.background = '#f9fafb'}
-              onMouseLeave={e => e.currentTarget.style.background = 'white'}
-            >
-              <Printer size={15} /> Print
-            </button>
-            <button onClick={onDone} style={{
-              flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+            <button onClick={() => window.open(`https://wa.me/?text=Hello! Here is your PES Hospital OPD Token: *${slip.token}*. Department: ${slip.department}, Floor: ${slip.floor}, Room: ${slip.room}.`, '_blank')} style={{
+              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
               padding: '0.65rem', borderRadius: '10px', border: 'none',
-              background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white',
-              fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.2s',
+              background: '#25D366', color: 'white', fontWeight: 600, cursor: 'pointer',
+              fontSize: '0.85rem', transition: 'all 0.2s',
             }}
               onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >
-              <Home size={15} /> Done
+              Share via WhatsApp (Demo)
             </button>
+            <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
+              <button onClick={() => window.print()} style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                padding: '0.65rem', borderRadius: '10px', border: '1.5px solid #d1d5db',
+                background: 'white', color: '#374151', fontWeight: 600, cursor: 'pointer',
+                fontSize: '0.85rem', transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f9fafb'}
+                onMouseLeave={e => e.currentTarget.style.background = 'white'}
+              >
+                <Printer size={15} /> Print
+              </button>
+              <button onClick={onDone} style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                padding: '0.65rem', borderRadius: '10px', border: 'none',
+                background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white',
+                fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                <Home size={15} /> Done
+              </button>
+            </div>
           </div>
         </div>
       </div>

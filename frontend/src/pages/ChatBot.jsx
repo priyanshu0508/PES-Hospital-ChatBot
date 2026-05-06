@@ -126,7 +126,7 @@ const ChatBot = () => {
       ]);
     };
     init();
-  }, [lang, addBot]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [lang, addBot]);
 
   // ─── Determine input type for current step ─────────────────
   const getInputType = () => {
@@ -134,24 +134,38 @@ const ChatBot = () => {
       case 'ask_dob': return 'date';
       case 'ask_mobile':
       case 'ask_aadhaar':
-      case 'ask_abha_number': return 'tel';
+      case 'ask_abha_number':
+      case 'ask_id_number':
+      case 'ask_perm_pincode':
+      case 'ask_present_pincode':
+      case 'ask_emergency_phone': return 'tel';
       default: return 'text';
     }
   };
 
   const getPlaceholder = () => {
     switch (step) {
-      case 'ask_name': return m('placeholder_name', lang);
-      case 'ask_mobile': return '9876543210';
+      case 'ask_name':
+      case 'ask_emergency_name': return m('placeholder_name', lang);
+      case 'ask_mobile':
+      case 'ask_emergency_phone': return '9876543210';
       case 'ask_aadhaar': return '1234 5678 9012';
       case 'ask_abha_number': return '12-3456-7890-1234';
       case 'ask_uhid': return 'PES-AB1234';
+      case 'ask_perm_pincode':
+      case 'ask_present_pincode': return '560001';
       default: return '';
     }
   };
 
   const showTextInput = () => {
-    const textSteps = ['ask_name', 'ask_dob', 'ask_mobile', 'ask_aadhaar', 'ask_abha_number', 'ask_uhid'];
+    const textSteps = [
+      'ask_name', 'ask_dob', 'ask_mobile', 'ask_aadhaar', 'ask_abha_number', 'ask_uhid',
+      'ask_id_number', 'ask_perm_home_no', 'ask_perm_street', 'ask_perm_locality', 'ask_perm_pincode',
+      'ask_present_home_no', 'ask_present_street', 'ask_present_locality', 'ask_present_pincode',
+      'ask_emergency_name', 'ask_emergency_other_relation', 'ask_emergency_phone',
+      'ask_custom_symptom'
+    ];
     return textSteps.includes(step) && !options && !showSymptoms;
   };
 
@@ -173,8 +187,14 @@ const ChatBot = () => {
         break;
       }
 
-      case 'verify_patient': {
-        if (value === 'yes') {
+      case 'ask_self_or_other': {
+        if (value === 'self') {
+          // Now show the welcome-back info and last visit
+          const lastDept = lastVisitData ? lastVisitData.department : 'N/A';
+          const lastDate = lastVisitData
+            ? new Date(lastVisitData.timestamp).toLocaleDateString()
+            : 'N/A';
+          await addBot(m('welcome_back', lang, patientRecord.name, lastDept, lastDate));
           await addBot(m('same_dept_or_new', lang));
           setStep('same_or_new');
           setOptions([
@@ -182,12 +202,35 @@ const ChatBot = () => {
             { label: m('new_concern_btn', lang), value: 'new' },
           ]);
         } else {
-          // Helping someone else → first visit for new person
+          // Accompanying someone else → fresh new registration
           collectedRef.current = {};
           setPatientRecord(null);
+          setLastVisitData(null);
           await addBot(m('ask_name', lang));
           setStep('ask_name');
         }
+        break;
+      }
+
+      case 'ask_pregnancy': {
+        // Replace women's health with the right dept keyword based on answer
+        const finalSymptoms = value === 'yes'
+          ? [...selectedSymptoms.filter(s => s !== "women's health"), 'obstetrics']
+          : selectedSymptoms; // "women's health" stays → maps to Gynaecology in backend
+        setSelectedSymptoms(finalSymptoms);
+
+        const col = collectedRef.current;
+        const symptomsStr = finalSymptoms.map(key => {
+          const chip = SYMPTOM_CHIPS.find(c => c.key === key);
+          return chip ? (chip.label[lang] || chip.label.en) : (key === 'obstetrics' ? 'Obstetrics (Pregnancy)' : key);
+        }).join(', ');
+
+        await addBot(m('review_details', lang, col.name, col.age || 'N/A', symptomsStr));
+        setStep('confirm_booking');
+        setOptions([
+          { label: m('yes_confirm', lang), value: 'yes' },
+          { label: m('no_edit', lang), value: 'no' },
+        ]);
         break;
       }
 
@@ -212,6 +255,29 @@ const ChatBot = () => {
         break;
       }
 
+      case 'ask_has_aadhaar': {
+        if (value === 'yes') {
+          updateCollected({ idType: 'Aadhaar' });
+          await addBot(m('ask_aadhaar', lang));
+          setStep('ask_aadhaar');
+        } else {
+          await addBot(m('ask_alt_id_type', lang));
+          setStep('ask_alt_id_type');
+          setOptions([
+            { label: m('dl_btn', lang), value: 'Driving License' },
+            { label: m('voter_btn', lang), value: 'Voter ID' },
+          ]);
+        }
+        break;
+      }
+
+      case 'ask_alt_id_type': {
+        updateCollected({ idType: value });
+        await addBot(m('ask_id_number', lang, value));
+        setStep('ask_id_number');
+        break;
+      }
+
       case 'ask_abha_choice': {
         if (value === 'yes') {
           await addBot(m('enter_abha', lang));
@@ -224,6 +290,46 @@ const ChatBot = () => {
             { label: m('have_abha_now', lang), value: 'have_now' },
             { label: m('generate_abha_link', lang), value: 'generate' },
           ]);
+        }
+        break;
+      }
+
+      case 'ask_perm_address_same': {
+        updateCollected({ permanentAddress: { isSameAsId: value === 'yes' } });
+        if (value === 'yes') {
+          await addBot(m('ask_present_address_same', lang));
+          setStep('ask_present_address_same');
+          setOptions([
+            { label: m('yes_same', lang), value: 'yes' },
+            { label: m('no_different', lang), value: 'no' },
+          ]);
+        } else {
+          await addBot(m('ask_home_no', lang));
+          setStep('ask_perm_home_no');
+        }
+        break;
+      }
+
+      case 'ask_present_address_same': {
+        updateCollected({ presentAddress: { isSameAsPermanent: value === 'yes' } });
+        if (value === 'yes') {
+          await addBot(m('ask_emergency_name', lang));
+          setStep('ask_emergency_name');
+        } else {
+          await addBot(m('ask_home_no', lang));
+          setStep('ask_present_home_no');
+        }
+        break;
+      }
+
+      case 'ask_emergency_relation': {
+        if (value === 'other') {
+          await addBot(m('ask_emergency_other_relation', lang));
+          setStep('ask_emergency_other_relation');
+        } else {
+          updateCollected({ emergencyContact: { ...collectedRef.current.emergencyContact, relation: value } });
+          await addBot(m('ask_emergency_phone', lang));
+          setStep('ask_emergency_phone');
         }
         break;
       }
@@ -308,15 +414,32 @@ const ChatBot = () => {
         const err = validators.mobile(val);
         if (err) { await addBot(m(err, lang)); return; }
         updateCollected({ mobile: val.replace(/\s/g, '') });
-        await addBot(m('ask_aadhaar', lang));
-        setStep('ask_aadhaar');
+        await addBot(m('ask_has_aadhaar', lang));
+        setStep('ask_has_aadhaar');
+        setOptions([
+          { label: m('yes_aadhaar', lang), value: 'yes' },
+          { label: m('no_aadhaar', lang), value: 'no' },
+        ]);
+        break;
+      }
+
+      case 'ask_id_number': {
+        const err = validators.id_number(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ idNumber: val.trim() });
+        await addBot(m('ask_perm_address_same', lang));
+        setStep('ask_perm_address_same');
+        setOptions([
+          { label: m('yes_same', lang), value: 'yes' },
+          { label: m('no_different', lang), value: 'no' },
+        ]);
         break;
       }
 
       case 'ask_aadhaar': {
         const err = validators.aadhaar(val);
         if (err) { await addBot(m(err, lang)); return; }
-        updateCollected({ aadhaar: val.replace(/\s|-/g, '') });
+        updateCollected({ idNumber: val.replace(/\s|-/g, '') });
         await addBot(m('ask_abha_choice', lang));
         setStep('ask_abha_choice');
         setOptions([
@@ -333,9 +456,155 @@ const ChatBot = () => {
           return;
         }
         updateCollected({ abha: cleaned });
+        await addBot(m('ask_perm_address_same', lang));
+        setStep('ask_perm_address_same');
+        setOptions([
+          { label: m('yes_same', lang), value: 'yes' },
+          { label: m('no_different', lang), value: 'no' },
+        ]);
+        break;
+      }
+
+      // --- Address Collection ---
+      case 'ask_perm_home_no': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ permanentAddress: { ...collectedRef.current.permanentAddress, homeNo: val.trim() } });
+        await addBot(m('ask_street', lang));
+        setStep('ask_perm_street');
+        break;
+      }
+      case 'ask_perm_street': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ permanentAddress: { ...collectedRef.current.permanentAddress, street: val.trim() } });
+        await addBot(m('ask_locality', lang));
+        setStep('ask_perm_locality');
+        break;
+      }
+      case 'ask_perm_locality': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ permanentAddress: { ...collectedRef.current.permanentAddress, locality: val.trim() } });
+        await addBot(m('ask_pincode', lang));
+        setStep('ask_perm_pincode');
+        break;
+      }
+      case 'ask_perm_pincode': {
+        const err = validators.pincode(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ permanentAddress: { ...collectedRef.current.permanentAddress, pincode: val.trim() } });
+        await addBot(m('ask_present_address_same', lang));
+        setStep('ask_present_address_same');
+        setOptions([
+          { label: m('yes_same', lang), value: 'yes' },
+          { label: m('no_different', lang), value: 'no' },
+        ]);
+        break;
+      }
+
+      case 'ask_present_home_no': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ presentAddress: { ...collectedRef.current.presentAddress, homeNo: val.trim() } });
+        await addBot(m('ask_street', lang));
+        setStep('ask_present_street');
+        break;
+      }
+      case 'ask_present_street': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ presentAddress: { ...collectedRef.current.presentAddress, street: val.trim() } });
+        await addBot(m('ask_locality', lang));
+        setStep('ask_present_locality');
+        break;
+      }
+      case 'ask_present_locality': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ presentAddress: { ...collectedRef.current.presentAddress, locality: val.trim() } });
+        await addBot(m('ask_pincode', lang));
+        setStep('ask_present_pincode');
+        break;
+      }
+      case 'ask_present_pincode': {
+        const err = validators.pincode(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ presentAddress: { ...collectedRef.current.presentAddress, pincode: val.trim() } });
+        await addBot(m('ask_emergency_name', lang));
+        setStep('ask_emergency_name');
+        break;
+      }
+
+      // --- Emergency Contact Collection ---
+      case 'ask_emergency_name': {
+        const err = validators.name(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ emergencyContact: { name: val.trim() } });
+        await addBot(m('ask_emergency_relation', lang));
+        setStep('ask_emergency_relation');
+        setOptions([
+          { label: m('relation_parent', lang), value: 'Parent' },
+          { label: m('relation_spouse', lang), value: 'Spouse' },
+          { label: m('relation_child', lang), value: 'Child' },
+          { label: m('relation_sibling', lang), value: 'Sibling' },
+          { label: m('relation_other', lang), value: 'other' },
+        ]);
+        break;
+      }
+      case 'ask_emergency_other_relation': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ emergencyContact: { ...collectedRef.current.emergencyContact, relation: val.trim() } });
+        await addBot(m('ask_emergency_phone', lang));
+        setStep('ask_emergency_phone');
+        break;
+      }
+      case 'ask_emergency_phone': {
+        const err = validators.mobile(val);
+        if (err) { await addBot(m(err, lang)); return; }
+        updateCollected({ emergencyContact: { ...collectedRef.current.emergencyContact, phone: val.replace(/\s/g, '') } });
         await addBot(m('ask_symptoms', lang));
         setStep('ask_symptoms');
         setShowSymptoms(true);
+        break;
+      }
+
+      case 'ask_custom_symptom': {
+        const err = validators.text_required(val);
+        if (err) { await addBot(m('custom_symptom_required', lang)); return; }
+        
+        // Remove 'other' and add the custom typed text
+        const finalSymptoms = selectedSymptoms.filter(s => s !== 'other');
+        finalSymptoms.push(`custom: ${val.trim()}`);
+        setSelectedSymptoms(finalSymptoms);
+        
+        // Check if women's health is also selected
+        if (finalSymptoms.includes("women's health")) {
+          await addBot(m('ask_pregnancy', lang));
+          setStep('ask_pregnancy');
+          setOptions([
+            { label: m('yes_pregnancy', lang), value: 'yes' },
+            { label: m('no_pregnancy', lang), value: 'no' },
+          ]);
+          break;
+        }
+
+        // Normal review flow
+        const col = collectedRef.current;
+        const labels = finalSymptoms.map(key => {
+          if (key.startsWith('custom: ')) return key.replace('custom: ', '');
+          const chip = SYMPTOM_CHIPS.find(c => c.key === key);
+          return chip ? (chip.label[lang] || chip.label.en) : key;
+        });
+        const symptomsStr = labels.join(', ');
+        await addBot(m('review_details', lang, col.name, col.age || 'N/A', symptomsStr));
+
+        setStep('confirm_booking');
+        setOptions([
+          { label: m('yes_confirm', lang), value: 'yes' },
+          { label: m('no_edit', lang), value: 'no' },
+        ]);
         break;
       }
 
@@ -365,7 +634,7 @@ const ChatBot = () => {
             const visitRes = await fetch(`${API}/visits/last/${val.toUpperCase()}`);
             const visitData = await visitRes.json();
             if (visitData.success) visitInfo = visitData.visit;
-          } catch (_) { /* no last visit — that's ok */ }
+          } catch { /* no last visit — that's ok */ }
 
           setPatientRecord(data.patient);
           setLastVisitData(visitInfo);
@@ -378,17 +647,12 @@ const ChatBot = () => {
 
           setIsTyping(false);
 
-          const lastDept = visitInfo ? visitInfo.department : 'N/A';
-          const lastDate = visitInfo
-            ? new Date(visitInfo.timestamp).toLocaleDateString()
-            : 'N/A';
-
-          await addBot(m('welcome_back', lang, data.patient.name, lastDept, lastDate));
-          await addBot(m('is_this_you', lang));
-          setStep('verify_patient');
+          // Ask self-or-other BEFORE revealing patient info
+          await addBot(m('ask_self_or_other', lang));
+          setStep('ask_self_or_other');
           setOptions([
-            { label: m('yes_this_is_me', lang), value: 'yes' },
-            { label: m('helping_someone', lang), value: 'no' },
+            { label: m('self_btn', lang), value: 'self' },
+            { label: m('other_btn', lang), value: 'other' },
           ]);
         } catch (error) {
           setIsTyping(false);
@@ -424,11 +688,29 @@ const ChatBot = () => {
     });
     addUser(labels.join(', '));
 
-    // Show summary
+    // ── Custom Symptom triage: ask to type before routing ──
+    if (selectedSymptoms.includes("other")) {
+      await addBot(m('ask_custom_symptom', lang));
+      setStep('ask_custom_symptom');
+      return;
+    }
+
+    // ── Women's Health triage: ask pregnancy before routing ──
+    if (selectedSymptoms.includes("women's health")) {
+      await addBot(m('ask_pregnancy', lang));
+      setStep('ask_pregnancy');
+      setOptions([
+        { label: m('yes_pregnancy', lang), value: 'yes' },
+        { label: m('no_pregnancy', lang), value: 'no' },
+      ]);
+      return;
+    }
+
+    // Normal review flow
     const col = collectedRef.current;
     const symptomsStr = labels.join(', ');
     await addBot(m('review_details', lang, col.name, col.age || 'N/A', symptomsStr));
-    
+
     setStep('confirm_booking');
     setOptions([
       { label: m('yes_confirm', lang), value: 'yes' },
@@ -454,8 +736,13 @@ const ChatBot = () => {
             name: col.name,
             age: col.age,
             gender: col.gender,
-            aadhaar: col.aadhaar,
+            idType: col.idType,
+            idNumber: col.idNumber,
+            abha: col.abha,
             mobile: col.mobile,
+            permanentAddress: col.permanentAddress,
+            presentAddress: col.presentAddress,
+            emergencyContact: col.emergencyContact,
           }),
         });
         const regData = await regRes.json();

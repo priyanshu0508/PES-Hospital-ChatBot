@@ -104,7 +104,8 @@ const Registration = () => {
       if (!v.trim())           return t('Name is required');
       if (v.trim().length < 2) return t('Name min 2');
       if (v.trim().length > 90) return t('Name max 90');
-      if (!/^[a-zA-Z\s.'\u0900-\u097F\u0C80-\u0CFF\u0C00-\u0C7F\u0B80-\u0BFF\u0B00-\u0B7F\u0C00-\u0C7F-]+$/.test(v.trim()))
+      // eslint-disable-next-line no-misleading-character-class
+      if (!/^[a-zA-Z\s.'\u0900-\u097F\u0C80-\u0CFF\u0C00-\u0C7F\u0B80-\u0BFF\u0B00-\u0B7F-]+$/.test(v.trim()))
         return t('Name letters only');
       return '';
     },

@@ -18,17 +18,23 @@ const verhoeff = (num) => {
 };
 
 // ─── Symptom chips (match departmentMapper.js keywords) ──────────
+// ─── 9 symptom chips matching PESU departments (no surgical — doctor-prescribed only) ──
 export const SYMPTOM_CHIPS = [
-  { key: 'fever',         label: { en: 'Fever / Cold',         hi: 'बुखार / सर्दी',          kn: 'ಜ್ವರ / ಶೀತ',             te: 'జ్వరం / జలుబు',           ta: 'காய்ச்சல் / சளி' } },
-  { key: 'chest pain',    label: { en: 'Chest Pain',           hi: 'सीने में दर्द',           kn: 'ಎದೆ ನೋವು',               te: 'ఛాతీ నొప్పి',              ta: 'மார்பு வலி' } },
-  { key: 'eye pain',      label: { en: 'Eye Problem',          hi: 'आंख की समस्या',          kn: 'ಕಣ್ಣಿನ ಸಮಸ್ಯೆ',           te: 'కంటి సమస్య',              ta: 'கண் பிரச்சனை' } },
-  { key: 'stomach pain',  label: { en: 'Stomach / Digestion',  hi: 'पेट की समस्या',           kn: 'ಹೊಟ್ಟೆ ನೋವು',             te: 'కడుపు సమస్య',             ta: 'வயிற்று வலி' } },
-  { key: 'bone pain',     label: { en: 'Bone / Joint Pain',    hi: 'हड्डी / जोड़ों का दर्द', kn: 'ಮೂಳೆ / ಕೀಲು ನೋವು',       te: 'ఎముక / కీళ్ళ నొప్పి',      ta: 'எலும்பு / மூட்டு வலி' } },
-  { key: 'skin rash',     label: { en: 'Skin Problem',         hi: 'त्वचा की समस्या',        kn: 'ಚರ್ಮದ ಸಮಸ್ಯೆ',            te: 'చర్మ సమస్య',               ta: 'தோல் பிரச்சனை' } },
-  { key: 'child fever',   label: { en: 'Child Health',         hi: 'बच्चे का स्वास्थ्य',    kn: 'ಮಕ್ಕಳ ಆರೋಗ್ಯ',            te: 'పిల్లల ఆరోగ్యం',           ta: 'குழந்தை நலம்' } },
-  { key: 'toothache',     label: { en: 'Tooth / Dental',       hi: 'दांत की समस्या',          kn: 'ಹಲ್ಲಿನ ಸಮಸ್ಯೆ',            te: 'పళ్ళ సమస్య',               ta: 'பல் பிரச்சனை' } },
-  { key: 'ear pain',      label: { en: 'Ear / Nose / Throat',  hi: 'कान / नाक / गला',        kn: 'ಕಿವಿ / ಮೂಗು / ಗಂಟಲು',     te: 'చెవి / ముక్కు / గొంతు',    ta: 'காது / மூக்கு / தொண்டை' } },
-  { key: "women's health", label: { en: "Women's Health",      hi: 'महिला स्वास्थ्य',         kn: 'ಮಹಿಳಾ ಆರೋಗ್ಯ',            te: 'మహిళా ఆరోగ్యం',            ta: 'பெண்கள் நலம்' } },
+  { key: 'fever',          label: { en: 'Fever / Cold',              hi: 'बुखार / सर्दी',           kn: 'ಜ್ವರ / ನೆಗಡಿ',            te: 'జ్వరం / జలుబు',          ta: 'காய்ச்சல் / சளி' } },
+  { key: "women's health", label: { en: "Women's Health",            hi: 'महिला स्वास्थ्य',         kn: 'ಮಹಿಳೆಯರ ಆರೋಗ್ಯ',          te: 'మహిళా ఆరోగ్యం',          ta: 'பெண்கள் நலம்' } },
+  { key: 'pregnancy',      label: { en: 'Pregnancy',                 hi: 'गर्भावस्था',              kn: 'ಗರ್ಭಾವಸ್ಥೆ',              te: 'గర్భధారణ',              ta: 'கர்ப்பம்' } },
+  { key: 'child fever',    label: { en: 'Child Health / Fever',      hi: 'बच्चे का स्वास्थ्य',     kn: 'ಮಕ್ಕಳ ಆರೋಗ್ಯ / ಜ್ವರ',    te: 'పిల్లల ఆరోగ్యం',         ta: 'குழந்தை நலம்' } },
+  { key: 'vaccination',    label: { en: 'Vaccination',               hi: 'टीकाकरण',                kn: 'ಲಸಿಕೆ',                   te: 'టీకాలు',                 ta: 'தடுப்பூசி' } },
+  { key: 'toothache',      label: { en: 'Tooth / Dental',             hi: 'दांत की समस्या',          kn: 'ಹಲ್ಲು ನೋವು',              te: 'పళ్ళ సమస్య',              ta: 'பல் பிரச்சனை' } },
+  { key: 'bone pain',      label: { en: 'Bone / Joint Pain',          hi: 'हड्डी / जोड़ों का दर्द', kn: 'ಮೂಳೆ / ಕೀಲು ನೋವು',      te: 'ఎముక / కీళ్ళ నొప్పి',     ta: 'எலும்பு / மூட்டு வலி' } },
+  { key: 'back pain',      label: { en: 'Back Pain',                 hi: 'पीठ दर्द',               kn: 'ಬೆನ್ನು ನೋವು',              te: 'నడుము నొప్పి',            ta: 'முதுகு வலி' } },
+  { key: 'mental health',  label: { en: 'Mental / Emotional Health',  hi: 'मानसिक स्वास्थ्य',       kn: 'ಮಾನಸಿಕ ಆರೋಗ್ಯ',           te: 'మానసిక ఆరోగ్యం',          ta: 'மன நலம்' } },
+  { key: 'eye pain',       label: { en: 'Eye Problem',                hi: 'आंख की समस्या',          kn: 'ಕಣ್ಣಿನ ಸಮಸ್ಯೆ',            te: 'కంటి సమస్య',              ta: 'கண் பிரச்சனை' } },
+  { key: 'ear pain',       label: { en: 'Ear / Nose / Throat',        hi: 'कान / नाक / गला',        kn: 'ಕಿವಿ / ಮೂಗು / ಗಂಟಲು',    te: 'చెవి / ముక్కు / గొంతు',   ta: 'காது / மூக்கு / தொண்டை' } },
+  { key: 'skin rash',      label: { en: 'Skin Problem',               hi: 'त्वचा की समस्या',        kn: 'ಚರ್ಮದ ಸಮಸ್ಯೆ',             te: 'చర్మ సమస్య',               ta: 'தோல் பிரச்சனை' } },
+  { key: 'hair loss',      label: { en: 'Hair Loss',                 hi: 'बालों का झड़ना',         kn: 'ಕೂದಲು ಉದುರುವಿಕೆ',         te: 'జుట్టు రాలడం',            ta: 'முடி உதிர்தல்' } },
+  { key: 'wound',          label: { en: 'Wound / Abscess',           hi: 'घाव / फोड़ा',             kn: 'ಗಾಯ / ವ್ರಣ',              te: 'గాయం',                   ta: 'காயம்' } },
+  { key: 'other',          label: { en: 'Other',                     hi: 'अन्य',                   kn: 'ಇತರೆ',                    te: 'ఇతరులు',                 ta: 'மற்றவர்கள்' } },
 ];
 
 // ─── Validators ──────────────────────────────────────────────────
@@ -36,6 +42,7 @@ export const validators = {
   name: (v) => {
     if (!v || !v.trim()) return 'name_required';
     if (v.trim().length < 2) return 'name_short';
+    // eslint-disable-next-line no-misleading-character-class
     if (!/^[a-zA-Z\u0900-\u097F\u0C00-\u0C7F\u0C80-\u0CFF\u0B80-\u0BFF\s.]+$/.test(v.trim())) return 'name_letters';
     return null;
   },
@@ -72,6 +79,20 @@ export const validators = {
   uhid: (v) => {
     if (!v || !v.trim()) return 'uhid_required';
     if (!/^PES-[A-Z0-9]{6}$/i.test(v.trim())) return 'uhid_format';
+    return null;
+  },
+  text_required: (v) => {
+    if (!v || !v.trim()) return 'text_required_error';
+    return null;
+  },
+  pincode: (v) => {
+    if (!v || !v.trim()) return 'pincode_required';
+    if (!/^\d{6}$/.test(v.trim())) return 'pincode_invalid';
+    return null;
+  },
+  id_number: (v) => {
+    if (!v || !v.trim()) return 'id_required';
+    if (v.trim().length < 4) return 'id_invalid';
     return null;
   },
 };
@@ -157,26 +178,49 @@ export const MSG = {
     te: (name, dept, date) => `తిరిగి స్వాగతం, ${name}!\n\nమీ చివరి విజిట్ ${date} న *${dept}* కి జరిగింది.`,
     ta: (name, dept, date) => `மீண்டும் வருக, ${name}!\n\nஉங்கள் கடைசி வருகை ${date} அன்று *${dept}* க்கு நடந்தது.`,
   },
-  is_this_you: {
-    en: "Is this the person visiting today?",
-    hi: "क्या आज इसी व्यक्ति की विजिट है?",
-    kn: "ಇಂದು ಈ ವ್ಯಕ್ತಿಯ ಭೇಟಿಯೇ?",
-    te: "ఈరోజు ఈ వ్యక్తి విజిట్ చేస్తున్నారా?",
-    ta: "இன்று இந்த நபர் தான் வருகை தருகிறாரா?",
+  // ─── Self or someone else (follow-up flow) ──────────────────
+  ask_self_or_other: {
+    en: "Is this visit for yourself or are you accompanying someone else?",
+    hi: "क्या यह विजिट आपके लिए है या आप किसी और के साथ आए हैं?",
+    kn: "ಈ ಭೇಟಿ ನಿಮಗಾಗಿಯೇ ಅಥವಾ ಬೇರೊಬ್ಬರಿಗಾಗಿಯೇ?",
+    te: "ఈ విజిట్ మీ కోసమా లేదా మీరు మరొకరికి తోడుగా వచ్చారా?",
+    ta: "இந்த வருகை உங்களுக்காகவா அல்லது வேற ஒருத்தருக்காகவா?",
   },
-  yes_this_is_me: {
-    en: "Yes, this is me",
-    hi: "हाँ, यह मैं ही हूँ",
-    kn: "ಹೌದು, ಇದು ನಾನೇ",
-    te: "అవును, ఇది నేనే",
-    ta: "ஆமா, இது நான் தான்",
+  self_btn: {
+    en: "For Myself",
+    hi: "मेरे लिए",
+    kn: "ನನಗಾಗಿ",
+    te: "నా కోసం",
+    ta: "என்னுக்காக",
   },
-  helping_someone: {
-    en: "No, I am helping someone else",
-    hi: "नहीं, मैं किसी और की मदद कर रहा हूँ",
-    kn: "ಇಲ್ಲ, ನಾನು ಬೇರೊಬ್ಬರಿಗೆ ಸಹಾಯ ಮಾಡ್ತಿದ್ದೇನೆ",
-    te: "కాదు, నేను మరొకరికి హెల్ప్ చేస్తున్నాను",
-    ta: "இல்ல, நான் வேற ஒருத்தருக்கு உதவி செய்றேன்",
+  other_btn: {
+    en: "For Someone Else",
+    hi: "किसी और के लिए",
+    kn: "ಬೇರೊಬ್ಬರಿಗಾಗಿ",
+    te: "మరొకరి కోసం",
+    ta: "வேற ஒருத்தருக்காக",
+  },
+  // ─── Obstetrics vs Gynaecology triage ────────────────────────
+  ask_pregnancy: {
+    en: "Is this visit related to pregnancy checkups?",
+    hi: "क्या यह विजिट गर्भावस्था जांच से संबंधित है?",
+    kn: "ಈ ಭೇಟಿ ಗರ್ಭಾವಸ್ಥೆಯ ತಪಾಸಣೆಗಾಗಿಯೇ?",
+    te: "ఈ విజిట్ గర్భధారణ చెకప్‌కు సంబంధించినదా?",
+    ta: "இந்த வருகை கர்ப்பகால பரிசோதனைக்காகவா?",
+  },
+  yes_pregnancy: {
+    en: "Yes, Pregnancy Related",
+    hi: "हाँ, गर्भावस्था से संबंधित",
+    kn: "ಹೌದು, ಗರ್ಭಾವಸ್ಥೆಗೆ ಸಂಬಂಧಿತ",
+    te: "అవును, గర్భధారణకు సంబంధించింది",
+    ta: "ஆமா, கர்ப்பம் தொடர்பானது",
+  },
+  no_pregnancy: {
+    en: "No, Other Women's Health Issue",
+    hi: "नहीं, अन्य महिला स्वास्थ्य समस्या",
+    kn: "ಇಲ್ಲ, ಇತರ ಮಹಿಳಾ ಆರೋಗ್ಯ ಸಮಸ್ಯೆ",
+    te: "కాదు, ఇతర మహిళా ఆరోగ్య సమస్య",
+    ta: "இல்ல, வேற பெண்கள் நல பிரச்சனை",
   },
   same_dept_or_new: {
     en: "Are you visiting for the same department or do you have a new health concern today?",
@@ -271,6 +315,17 @@ export const MSG = {
   aadhaar_12digits: { en: "Aadhaar must be exactly 12 digits. Please try again.",                  hi: "आधार ठीक 12 अंकों का होना चाहिए। फिर से डालें।",             kn: "ಆಧಾರ್ ಸರಿಯಾಗಿ 12 ಅಂಕೆ ಇರಬೇಕು. ಮತ್ತೆ ಹಾಕಿ.",               te: "ఆధార్ సరిగ్గా 12 అంకెలు ఉండాలి. మళ్ళీ ఇవ్వండి.",            ta: "ஆதார் சரியா 12 இலக்கம் இருக்கணும். மறுபடி கொடுங்கள்." },
   aadhaar_pattern: { en: "Invalid Aadhaar number pattern. Please enter the correct number.",       hi: "आधार नंबर का पैटर्न गलत है। सही नंबर डालें।",                kn: "ಆಧಾರ್ ನಂಬರ್ ಮಾದರಿ ತಪ್ಪಾಗಿದೆ. ಸರಿಯಾದ ನಂಬರ್ ಹಾಕಿ.",       te: "ఆధార్ నంబర్ ప్యాటర్న్ తప్పు. సరైన నంబర్ ఇవ్వండి.",         ta: "ஆதார் நம்பர் வடிவம் தவறு. சரியான நம்பர் கொடுங்கள்." },
   aadhaar_checksum: { en: "This Aadhaar number is invalid. Please double-check and try again.",    hi: "यह आधार नंबर गलत है। जांचकर फिर से डालें।",                  kn: "ಈ ಆಧಾರ್ ನಂಬರ್ ತಪ್ಪಾಗಿದೆ. ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಹಾಕಿ.",          te: "ఈ ఆధార్ నంబర్ తప్పు. చెక్ చేసి మళ్ళీ ఇవ్వండి.",            ta: "இந்த ஆதார் நம்பர் தவறு. பார்த்து மறுபடி கொடுங்கள்." },
+  
+  // ─── Alternative ID ───────────────────────────────────────
+  ask_has_aadhaar: { en: "Do you have an Aadhaar card?", hi: "क्या आपके पास आधार कार्ड है?", kn: "ನಿಮ್ಮ ಬಳಿ ಆಧಾರ್ ಕಾರ್ಡ್ ಇದೆಯೇ?", te: "మీకు ఆధార్ కార్డ్ ఉందా?", ta: "உங்களிடம் ஆதார் அட்டை உள்ளதா?" },
+  yes_aadhaar: { en: "Yes, I have Aadhaar", hi: "हाँ, आधार है", kn: "ಹೌದು, ಆಧಾರ್ ಇದೆ", te: "అవును, ఆధార్ ఉంది", ta: "ஆம், ஆதார் உள்ளது" },
+  no_aadhaar: { en: "No, I don't have it", hi: "नहीं, आधार नहीं है", kn: "ಇಲ್ಲ, ಆಧಾರ್ ಇಲ್ಲ", te: "లేదు, ఆధార్ లేదు", ta: "இல்லை, ஆதார் இல்லை" },
+  ask_alt_id_type: { en: "Please select an alternative ID type.", hi: "कृपया एक वैकल्पिक ID प्रकार चुनें।", kn: "ದಯವಿಟ್ಟು ಪರ್ಯಾಯ ID ಆಯ್ಕೆಮಾಡಿ.", te: "దయచేసి ప్రత్యామ్నాయ ID ని ఎంచుకోండి.", ta: "மாற்று ID வகையைத் தேர்ந்தெடுக்கவும்." },
+  dl_btn: { en: "Driving License", hi: "ड्राइविंग लाइसेंस", kn: "ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್", te: "డ్రైవింగ్ లైసెన్స్", ta: "ஓட்டுநர் உரிமம்" },
+  voter_btn: { en: "Voter ID", hi: "वोटर आईडी", kn: "ವೋಟರ್ ಐಡಿ", te: "ఓటర్ ID", ta: "வாக்காளர் அடையாள அட்டை" },
+  ask_id_number: { en: (type) => `Please enter your ${type} number.`, hi: (type) => `कृपया अपना ${type} नंबर डालें।`, kn: (type) => `ನಿಮ್ಮ ${type} ನಂಬರ್ ಹಾಕಿ.`, te: (type) => `దయచేసి మీ ${type} నంబర్ నమోదు చేయండి.`, ta: (type) => `உங்கள் ${type} எண்ணை உள்ளிடவும்.` },
+  id_required: { en: "ID number is required.", hi: "ID नंबर ज़रूरी है।", kn: "ID ನಂಬರ್ ಬೇಕು.", te: "ID నంబర్ కావాలి.", ta: "ID எண் தேவை." },
+  id_invalid: { en: "ID number looks invalid. Please try again.", hi: "ID नंबर अमान्य लग रहा है। फिर से प्रयास करें।", kn: "ID ನಂಬರ್ ಅಮಾನ್ಯವಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.", te: "ID నంబర్ చెల్లనిదిగా ఉంది. మళ్లీ ప్రయత్నించండి.", ta: "ID எண் தவறானது. மீண்டும் முயற்சிக்கவும்." },
   // ─── ABHA (mandatory) ─────────────────────────────────────
   ask_abha_choice: {
     en: "Do you have an ABHA (Ayushman Bharat Health Account) number?",
@@ -359,6 +414,44 @@ export const MSG = {
     te: "నిర్ధారించండి",
     ta: "உறுதிசெய்",
   },
+  ask_custom_symptom: {
+    en: "Please briefly type your symptoms or health issue.",
+    hi: "कृपया संक्षेप में अपनी तकलीफ लिखें।",
+    kn: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ತೊಂದರೆಯನ್ನು ಸಂಕ್ಷಿಪ್ತವಾಗಿ ಬರೆಯಿರಿ.",
+    te: "దయచేసి మీ సమస్యను క్లుప్తంగా టైప్ చేయండి.",
+    ta: "தயவுசெய்து உங்கள் பிரச்சனையை சுருக்கமாக தட்டச்சு செய்க."
+  },
+  custom_symptom_required: {
+    en: "Please type something so we can guide you.",
+    hi: "कृपया कुछ लिखें ताकि हम आपका मार्गदर्शन कर सकें।",
+    kn: "ದಯವಿಟ್ಟು ಏನನ್ನಾದರೂ ಬರೆಯಿರಿ, ಆಗ ನಾವು ನಿಮಗೆ ಸಹಾಯ ಮಾಡಬಹುದು.",
+    te: "దయచేసి ఏదైనా టైప్ చేయండి, తద్వారా మేము మీకు మార్గనిర్దేశం చేయగలము.",
+    ta: "தயவுசெய்து எதையாவது தட்டச்சு செய்யவும், அதனால் நாங்கள் உங்களை வழிகாட்ட முடியும்."
+  },
+  
+  // ─── Addresses & Emergency ─────────────────────────────────
+  ask_perm_address_same: { en: "Is your permanent address the same as on your ID card?", hi: "क्या आपका स्थायी पता आपके ID कार्ड जैसा ही है?", kn: "ನಿಮ್ಮ ಶಾಶ್ವತ ವಿಳಾಸ ನಿಮ್ಮ ID ಕಾರ್ಡ್‌ನಲ್ಲಿರುವಂತೆಯೇ ಇದೆಯೇ?", te: "మీ శాశ్వత చిరునామా మీ ID కార్డ్‌లో ఉన్నట్లే ఉందా?", ta: "உங்கள் நிரந்தர முகவரி உங்கள் ஐடி கார்டில் உள்ளதைப் போலவே உள்ளதா?" },
+  yes_same: { en: "Yes, it is the same", hi: "हाँ, वही है", kn: "ಹೌದು, ಅದೇ", te: "అవును, అదే", ta: "ஆம், அதே தான்" },
+  no_different: { en: "No, I will enter it", hi: "नहीं, मैं डालूंगा", kn: "ಇಲ್ಲ, ನಾನು ನಮೂದಿಸುತ್ತೇನೆ", te: "లేదు, నేను నమోదు చేస్తాను", ta: "இல்லை, நான் உள்ளிடுகிறேன்" },
+  ask_home_no: { en: "What is your House/Flat number?", hi: "आपका मकान/फ्लैट नंबर क्या है?", kn: "ನಿಮ್ಮ ಮನೆ/ಫ್ಲಾಟ್ ನಂಬರ್ ಏನು?", te: "మీ ఇంటి/ఫ్లాట్ నంబర్ ఏమిటి?", ta: "உங்கள் வீடு/பிளாட் எண் என்ன?" },
+  ask_street: { en: "What is your Street name/number?", hi: "आपके गली का नाम/नंबर क्या है?", kn: "ನಿಮ್ಮ ರಸ್ತೆಯ ಹೆಸರು/ನಂಬರ್ ಏನು?", te: "మీ వీధి పేరు/నంబర్ ఏమిటి?", ta: "உங்கள் தெரு பெயர்/எண் என்ன?" },
+  ask_locality: { en: "What is your Area/Locality?", hi: "आपका इलाका क्या है?", kn: "ನಿಮ್ಮ ಪ್ರದೇಶ ಯಾವುದು?", te: "మీ ప్రాంతం ఏమిటి?", ta: "உங்கள் பகுதி என்ன?" },
+  ask_pincode: { en: "What is your 6-digit Pincode?", hi: "आपका 6 अंकों का पिनकोड क्या है?", kn: "ನಿಮ್ಮ 6 ಅಂಕಿಯ ಪಿನ್‌ಕೋಡ್ ಏನು?", te: "మీ 6 అంకెల పిన్‌కోడ్ ఏమిటి?", ta: "உங்கள் 6 இலக்க பின்கோடு என்ன?" },
+  ask_present_address_same: { en: "Is your present address the same as your permanent address?", hi: "क्या आपका वर्तमान पता आपके स्थायी पते जैसा ही है?", kn: "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ವಿಳಾಸ ನಿಮ್ಮ ಶಾಶ್ವತ ವಿಳಾಸದಂತೆಯೇ ಇದೆಯೇ?", te: "మీ ప్రస్తుత చిరునామా మీ శాశ్వత చిరునామా వలె ఉందా?", ta: "உங்கள் தற்போதைய முகவரி உங்கள் நிரந்தர முகவரியைப் போலவே உள்ளதா?" },
+  
+  text_required_error: { en: "This field is required. Please type your answer.", hi: "यह फ़ील्ड आवश्यक है।", kn: "ಈ ಕ್ಷೇತ್ರ ಅಗತ್ಯವಿದೆ.", te: "ఈ ఫీల్డ్ అవసరం.", ta: "இந்த புலம் தேவை." },
+  pincode_required: { en: "Pincode is required.", hi: "पिनकोड आवश्यक है।", kn: "ಪಿನ್‌ಕೋಡ್ ಅಗತ್ಯವಿದೆ.", te: "పిన్‌కోడ్ అవసరం.", ta: "பின்கோடு தேவை." },
+  pincode_invalid: { en: "Pincode must be exactly 6 digits.", hi: "पिनकोड 6 अंकों का होना चाहिए।", kn: "ಪಿನ್‌ಕೋಡ್ 6 ಅಂಕಿಗಳಾಗಿರಬೇಕು.", te: "పిన్‌కోడ్ 6 అంకెలు ఉండాలి.", ta: "பின்கோடு 6 இலக்கங்களாக இருக்க வேண்டும்." },
+  
+  ask_emergency_name: { en: "Let's collect an emergency contact. What is their name?", hi: "आइए एक आपातकालीन संपर्क लें। उनका नाम क्या है?", kn: "ತುರ್ತು ಸಂಪರ್ಕವನ್ನು ಪಡೆಯೋಣ. ಅವರ ಹೆಸರೇನು?", te: "అత్యవసర పరిచయాన్ని తీసుకుందాం. వారి పేరు ఏమిటి?", ta: "அவசரகால தொடர்பை எடுப்போம். அவர்களின் பெயர் என்ன?" },
+  ask_emergency_relation: { en: "What is their relationship to you?", hi: "उनका आपसे क्या रिश्ता है?", kn: "ಅವರು ನಿಮಗೆ ಏನಾಗಬೇಕು?", te: "వారితో మీకు ఉన్న సంబంధం ఏమిటి?", ta: "அவர்களுக்கும் உங்களுக்குமான உறவு என்ன?" },
+  relation_parent: { en: "Parent", hi: "माता-पिता", kn: "ಪೋಷಕರು", te: "తల్లిదండ్రులు", ta: "பெற்றோர்" },
+  relation_spouse: { en: "Spouse", hi: "जीवनसाथी", kn: "ಜೀವನಸಂಗಾತಿ", te: "జీవిత భాగస్వామి", ta: "வாழ்க்கை துணை" },
+  relation_child: { en: "Child", hi: "बच्चा", kn: "ಮಗು", te: "పిల్లవాడు", ta: "குழந்தை" },
+  relation_sibling: { en: "Sibling", hi: "भाई-बहन", kn: "ಸಹೋದರ/ಸಹೋದರಿ", te: "తోబుట్టువులు", ta: "உடன்பிறப்பு" },
+  relation_other: { en: "Other", hi: "अन्य", kn: "ಇತರೆ", te: "ఇతరులు", ta: "மற்றவர்கள்" },
+  ask_emergency_other_relation: { en: "Please type the relationship.", hi: "कृपया रिश्ता लिखें।", kn: "ದಯವಿಟ್ಟು ಸಂಬಂಧವನ್ನು ಬರೆಯಿರಿ.", te: "దయచేసి సంబంధాన్ని టైప్ చేయండి.", ta: "தயவுசெய்து உறவைத் தட்டச்சு செய்க." },
+  ask_emergency_phone: { en: "What is their 10-digit mobile number?", hi: "उनका 10 अंकों का मोबाइल नंबर क्या है?", kn: "ಅವರ 10 ಅಂಕೆಯ ಮೊಬೈಲ್ ನಂಬರ್ ಏನು?", te: "వారి 10 అంకెల మొబైల్ నంబర్ ఏమిటి?", ta: "அவர்களின் 10 இலக்க மொபைல் எண் என்ன?" },
   // ─── Review & Confirmation ────────────────────────────────
   review_details: {
     en: (name, age, symptoms) => `*Review your details:*\n\n*Name:* ${name}\n*Age:* ${age}\n*Symptoms:* ${symptoms}\n\nIs everything correct?`,

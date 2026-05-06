@@ -25,9 +25,9 @@ const generateToken = async (prefix, deptName) => {
 // ─── POST /api/patients/register ─────────────────────────────────
 const registerPatient = async (req, res) => {
   try {
-    const { name, age, gender, aadhaar, abha, mobile } = req.body;
-    if (!name || !age || !gender || !aadhaar || !mobile) {
-      return res.status(400).json({ success: false, message: 'All fields are required.' });
+    const { name, age, gender, idType, idNumber, abha, mobile, permanentAddress, presentAddress, emergencyContact } = req.body;
+    if (!name || !age || !gender || !idType || !idNumber || !mobile) {
+      return res.status(400).json({ success: false, message: 'Required fields are missing.' });
     }
 
     let uhid;
@@ -38,7 +38,10 @@ const registerPatient = async (req, res) => {
       if (!existing) unique = true;
     }
 
-    const patient = await Patient.create({ uhid, name, age, gender, aadhaar, abha: abha || '', mobile });
+    const patient = await Patient.create({ 
+      uhid, name, age, gender, idType, idNumber, abha: abha || '', mobile,
+      permanentAddress, presentAddress, emergencyContact
+    });
     res.status(201).json({ success: true, uhid: patient.uhid, message: 'Patient registered successfully.' });
   } catch (error) {
     console.error(error);
@@ -88,6 +91,12 @@ const createVisit = async (req, res) => {
       floor: visit.floor,
       room: visit.room,
     });
+
+    // ─── Demo Automated SMS ──────────────────────────────────────────
+    console.log(`\n[DEMO SMS SENDER] ---------------------------------------------`);
+    console.log(`To: Patient (UHID: ${patientUHID})`);
+    console.log(`Message: PES Hospital: Your token for ${visit.department} is ${visit.token}. Proceed to Floor ${visit.floor}, Room ${visit.room}.`);
+    console.log(`---------------------------------------------------------------\n`);
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server error during visit creation.' });

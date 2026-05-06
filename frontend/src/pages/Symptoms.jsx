@@ -5,49 +5,61 @@ import { usePatient } from '../context/PatientContext';
 import { createVisit } from '../services/api';
 import { Mic, MicOff, Check, ArrowRight, ArrowLeft, Volume2, Loader2, AlertCircle } from 'lucide-react';
 
+// ── PESU Hospital Department Map ────────────────────────────────────
+// 1st Floor: General Medicine, General Surgery, Obstetrics, Gynaecology,
+//            Paediatrics, Dental, Orthopaedic
+// 2nd Floor: Psychiatry, Ophthalmologist, ENT, Dermatology (DVL)
 const DEPARTMENT_MAP = [
-  { dept: "General Medicine", floor: 1, room: "101", keywords: ["fever", "cold", "cough", "body ache", "weakness"] },
-  { dept: "Cardiology", floor: 2, room: "201", keywords: ["chest pain", "heart racing", "breathlessness"] },
-  { dept: "Ophthalmology", floor: 2, room: "205", keywords: ["eye pain", "blurry vision", "redness", "eye problem"] },
-  { dept: "Gastroenterology", floor: 1, room: "108", keywords: ["stomach pain", "vomiting", "diarrhoea", "acidity", "stomach problem"] },
-  { dept: "Orthopaedics", floor: 3, room: "301", keywords: ["bone pain", "joint pain", "back pain"] },
-  { dept: "Dermatology", floor: 3, room: "310", keywords: ["skin rash", "itching", "hair loss", "skin problem"] },
-  { dept: "Paediatrics", floor: 4, room: "401", keywords: ["child fever", "vaccination", "child growth", "child health"] },
-  { dept: "Gynaecology", floor: 2, room: "215", keywords: ["women's health", "pregnancy", "period", "gynaecology"] },
-  { dept: "Dental", floor: 1, room: "112", keywords: ["toothache", "gum pain", "cavity", "tooth problem"] },
-  { dept: "ENT", floor: 2, room: "210", keywords: ["ear pain", "hearing problem", "throat pain", "ear problem", "nose problem"] }
+  // 1st Floor
+  { dept: "General Medicine",  floor: 1, room: "101", keywords: ["fever", "cold", "cough", "body ache", "weakness", "general medicine"] },
+  { dept: "General Surgery",   floor: 1, room: "105", keywords: ["general surgery", "surgery", "surgical", "wound"] },
+  { dept: "Obstetrics",        floor: 1, room: "110", keywords: ["obstetrics", "pregnancy", "antenatal", "prenatal", "maternity"] },
+  { dept: "Gynaecology",       floor: 1, room: "112", keywords: ["women's health", "gynaecology", "period", "menstrual"] },
+  { dept: "Paediatrics",       floor: 1, room: "115", keywords: ["child fever", "vaccination", "child growth", "child health", "paediatrics"] },
+  { dept: "Dental",            floor: 1, room: "118", keywords: ["toothache", "gum pain", "cavity", "tooth problem", "dental"] },
+  { dept: "Orthopaedic",       floor: 1, room: "120", keywords: ["bone pain", "joint pain", "back pain", "fracture", "orthopaedic"] },
+  // 2nd Floor
+  { dept: "Psychiatry",        floor: 2, room: "201", keywords: ["mental health", "anxiety", "depression", "stress", "emotional", "insomnia"] },
+  { dept: "Ophthalmologist",   floor: 2, room: "205", keywords: ["eye pain", "blurry vision", "redness", "eye problem", "cataract"] },
+  { dept: "ENT",               floor: 2, room: "210", keywords: ["ear pain", "hearing problem", "throat pain", "ear problem", "nose problem", "sinus"] },
+  { dept: "Dermatology (DVL)", floor: 2, room: "215", keywords: ["skin rash", "itching", "hair loss", "skin problem", "acne", "eczema"] },
 ];
 
+// Expanded chips
 const DISPLAY_SYMPTOMS = [
-  { id: "fever", label: "Fever / Cold", emoji: "🤒" },
-  { id: "eye", label: "Eye Problem", emoji: "👁️" },
-  { id: "chest", label: "Chest Pain", emoji: "💔" },
-  { id: "stomach", label: "Stomach Pain", emoji: "🤢" },
-  { id: "bone", label: "Bone / Joint Pain", emoji: "🦴" },
-  { id: "skin", label: "Skin Problem", emoji: "🩹" },
-  { id: "child", label: "Child Health", emoji: "👶" },
-  { id: "dental", label: "Tooth / Gum Pain", emoji: "🦷" },
-  { id: "ent", label: "Ear / Nose / Throat", emoji: "👂" },
-  { id: "gynae", label: "Women's Health", emoji: "🤰" }
+  { id: "fever",   label: "Fever / Cold",             emoji: "🤒" },
+  { id: "gynae",   label: "Women's Health",            emoji: "👩" },
+  { id: "pregnancy", label: "Pregnancy",             emoji: "🤰" },
+  { id: "child",   label: "Child Health",              emoji: "👶" },
+  { id: "vaccination", label: "Vaccination",         emoji: "💉" },
+  { id: "dental",  label: "Tooth / Dental",            emoji: "🦷" },
+  { id: "bone",    label: "Bone / Joint Pain",         emoji: "🦴" },
+  { id: "back",    label: "Back Pain",                 emoji: "⚡" },
+  { id: "mental",  label: "Mental / Emotional Health", emoji: "🧠" },
+  { id: "eye",     label: "Eye Problem",               emoji: "👁️" },
+  { id: "ent",     label: "Ear / Nose / Throat",       emoji: "👂" },
+  { id: "skin",    label: "Skin Problem",              emoji: "🩹" },
+  { id: "hair",    label: "Hair Loss",                 emoji: "💇" },
+  { id: "wound",   label: "Wound / Abscess",           emoji: "🤕" },
+  { id: "other",   label: "Other",                     emoji: "❓" },
 ];
-
 const SYMPTOM_KEYWORDS = {
-  "fever": "fever", "eye": "eye problem", "chest": "chest pain",
-  "stomach": "stomach pain", "bone": "bone pain", "skin": "skin problem",
-  "child": "child health", "dental": "toothache", "ent": "ear problem", "gynae": "pregnancy"
+  "fever":  "fever",
+  "gynae":  "women's health",
+  "pregnancy": "pregnancy",
+  "child":  "child health",
+  "vaccination": "vaccination",
+  "dental": "toothache",
+  "bone":   "bone pain",
+  "back":   "back pain",
+  "mental": "mental health",
+  "eye":    "eye problem",
+  "ent":    "ear problem",
+  "skin":   "skin rash",
+  "hair":   "hair loss",
+  "wound":  "wound",
 };
 
-const getDepartment = (selectedIds) => {
-  const allText = selectedIds.map(id => SYMPTOM_KEYWORDS[id] || id).join(' ').toLowerCase();
-  for (const mapping of DEPARTMENT_MAP) {
-    if (mapping.keywords.some(kw => allText.includes(kw))) {
-      const prefix = mapping.dept.substring(0, 3).toUpperCase();
-      const num = String(Math.floor(Math.random() * 99) + 1).padStart(3, '0');
-      return { name: mapping.dept, floor: mapping.floor, room: mapping.room, token: `${prefix}-${num}` };
-    }
-  }
-  return { name: "General Medicine", floor: 1, room: "101", token: "GM-" + String(Math.floor(Math.random() * 99) + 1).padStart(3, '0') };
-};
 
 const Symptoms = () => {
   const navigate = useNavigate();
